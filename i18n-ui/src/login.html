@@ -1,0 +1,28 @@
+<template>
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="page-head-line">Please Login To Enter </h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <require from="./msg.html"></require>
+                    <msg messages.bind="msg.messages"></msg>
+                    <h4> Login with <strong>I18N Account:</strong></h4>
+                    <br/>
+                    <label>Enter User ID : </label>
+                    <input type="text" value.bind="username" class="form-control"/>
+                    <label>Enter Password : </label>
+                    <input type="password" value.bind="password" class="form-control"/>
+                    <hr/>
+                    <a click.delegate="login()" class="btn btn-info">
+                        <span class="glyphicon glyphicon-user"></span>
+                        &nbsp;Log Me In
+                    </a>&nbsp;
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

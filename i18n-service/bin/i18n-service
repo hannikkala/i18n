@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+const config = require('../config');
+const I18NService = require('../i18n-service');
+
+const i18n = new I18NService({});
+i18n.importProjects();
+i18n.startServer(config.port);

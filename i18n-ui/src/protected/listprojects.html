@@ -1,0 +1,33 @@
+<template>
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Actions</th>
+            <th>Project</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr repeat.for="project of projects">
+            <td>
+                <a href="#/protected/edit/${project.name}" class="btn btn-xs btn-info">
+                    Edit translations
+                </a>
+                <a class="btn btn-xs btn-danger" click.delegate="remove(project)">
+                    Remove project
+                </a>
+            </td>
+            <td>${project.name}</td>
+            <td repeat.for="locale of project.locales">
+                ${locale}:<br />
+                <a class="btn btn-xs btn-success" href="/api/${project.name}/${locale}.json">
+                    JSON
+                </a>
+                <a class="btn btn-xs btn-success" href="/api/${project.name}/${locale}.properties">
+                    Java properties
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</template>

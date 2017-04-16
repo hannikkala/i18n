@@ -1,0 +1,3 @@
+<template bindable="messages">
+    <div repeat.for="error of messages" class="alert alert-${error.type}">${error.message}</div>
+</template>

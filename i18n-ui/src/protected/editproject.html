@@ -1,0 +1,59 @@
+<template>
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="page-head-line">Translations for project: ${project}</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <require from="../msg.html"></require>
+            <msg messages.bind="msg.messages"></msg>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>Key</th>
+                <th repeat.for="locale of locales">${locale}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr repeat.for="[key, translation] of translations">
+                <td>${key}</td>
+                <td repeat.for="locale of locales">
+                    <input type="text" value.bind="translation[locale]" size="40" />
+                </td>
+            </tr>
+            <tr>
+                <th>Key</th>
+                <th repeat.for="locale of locales">${locale}</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td repeat.for="locale of locales">
+                    <a class="btn btn-info" click.delegate="save(locale)">
+                        Save '${locale}' translations
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="page-head-line">Add a new translation:</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <msg messages.bind="msg.messages"></msg>
+            <input type="text" value.bind="newKey" placeholder="New translation key" size="50" />
+            <a class="btn btn-info" click.delegate="addNew()">
+                Save
+            </a>
+        </div>
+    </div>
+</template>

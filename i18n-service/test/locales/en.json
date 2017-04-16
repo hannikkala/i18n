@@ -1,0 +1,11 @@
+{
+  "hello" : "hello",
+  "bye" : "bye",
+  "views": {
+    "partials": {
+      "navbar" : {
+        "title" : "Navbar Title"
+      }
+    }
+  }
+}

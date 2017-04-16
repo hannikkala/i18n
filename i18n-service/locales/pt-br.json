@@ -1,0 +1,10 @@
+{
+  "hello" : "olá",
+  "bye" : "Tchau",
+  "ppk" : "Ppk dlç",
+  "teste" : {
+    "peteca": {
+      "name" : "Nome"
+    }
+  }
+}

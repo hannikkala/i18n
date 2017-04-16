@@ -1,0 +1,60 @@
+{
+  "name": "i18n-service",
+  "description": "Node i18n service",
+  "homepage": "https://github.com/hannikkala/i18n-service",
+  "bugs": "https://github.com/hannikkala/i18n-service/issues",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Lucas Merencia",
+      "email": "lucas.merencia@gmail.com",
+      "url": "http://merencia.com"
+    },
+    {
+      "name": "Tommi Hännikkälä",
+      "email": "tommi@hannikkala.com",
+      "url": "http://github.com/hannikkala"
+    }
+  ],
+  "version": "0.1.0",
+  "scripts": {
+    "start": "./bin/i18n-service",
+    "test": "make test"
+  },
+  "main": "./i18n-service.js",
+  "bin": {
+    "i18n-service": "./bin/i18n-service"
+  },
+  "keywords": [
+    "i18n",
+    "translator"
+  ],
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "body-parser": "~1.15.2",
+    "cookie-parser": "~1.4.3",
+    "dot-object": "^1.5.4",
+    "express": "^4.15.2",
+    "express-handlebars": "^3.0.0",
+    "express-jwt": "^5.1.0",
+    "jsonwebtoken": "^7.3.0",
+    "lodash": "^4.17.4",
+    "mongoose": "^4.9.4",
+    "morgan": "~1.7.0",
+    "swagger-jsdoc": "^1.9.2",
+    "swagger-ui-express": "^1.0.7"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "coveralls": "2.6.1",
+    "expect.js": "*",
+    "istanbul": "*",
+    "mocha": "^3.2.0",
+    "mocha-lcov-reporter": "0.0.1",
+    "supertest": "^2.0.0"
+  }
+}
