@@ -36,11 +36,13 @@ export class Welcome {
       return this.httpClient.fetch('/projects', {
         method: 'post',
         body: json(this.newProject)
-      }).then(response => response.json());
-    }).then((project) => {
-      console.log(project);
-      this.projects.push(project);
-      this.msg.info(`Project ${project.name} added.`);
+      })
+      .then(response => response.json())
+      .then((project) => {
+        console.log(project);
+        this.projects.push(project);
+        this.msg.info(`Project ${project.name} added.`);
+      });
     });
   }
 

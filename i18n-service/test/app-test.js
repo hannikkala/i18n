@@ -22,27 +22,23 @@ describe('App', () => {
       svc.startServer(3000);
     }));
 
-  it('can list projects', (done) => {
-    server.get('/api/projects').expect(200)
+  it('can list projects', () => {
+    return server.get('/api/projects').expect(200)
       .then((res) => {
         res.body.should.have.length(2);
-        done();
-      }).catch(done);
-  });
-
-  it('can find translations by locale', (done) => {
-    server.get('/api/default/en').expect(200)
-      .then((res) => {
-        res.body.should.have.property('hello');
-        done();
       });
   });
 
-  it('can find translations by project and locale', (done) => {
-    server.get('/api/second/en').expect(200)
+  it('can find translations by locale', () =>
+    server.get('/api/default/en').expect(200)
+      .then((res) => {
+        res.body.should.have.property('hello');
+      }));
+
+  it('can find translations by project and locale', () => {
+    return server.get('/api/second/en').expect(200)
       .then((res) => {
         res.body.should.have.property('test.test');
-        done();
       });
   });
 

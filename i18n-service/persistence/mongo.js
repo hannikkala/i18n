@@ -12,46 +12,45 @@ mongoose.connect(config.mongoUrl, function(err) {
   if (err) throw err;
 });
 
-function findProjectAndLocale(project, locale) {
-  const projectPromise = models.Project.findOne({ name: project || 'default' });
-  const localePromise = locale ? models.Locale.findOne({ locale: locale }) : Promise.resolve();
-  return Promise.all([projectPromise, localePromise]);
+async function findProjectAndLocale(project, locale) {
+  const projectObj = await models.Project.findOne({ name: project || 'default' });
+  const localeObj = await (locale ? models.Locale.findOne({ locale: locale }).exec() : Promise.resolve());
+  return { project: projectObj, locale: localeObj };
 }
 
-function find(project, locale, key) {
-  return findProjectAndLocale(project, locale)
-    .spread(function(project, locale) {
-      assert(project, 'Project cannot be found.');
-      let conditions = { project: project._id };
-      if (locale) {
-        conditions.locale = locale._id;
-      }
-      if (key) {
-        conditions.key = new RegExp('^' + key);
-      }
-      return models.Translation.find(conditions).exec()
-        .then(function(translations) {
-          const obj = {};
-          for(const i in translations) {
-            const translation = translations[i];
-            obj[translation.key] = translation.translated;
-          }
-          return obj;
-        });
-    });
+async function find(projectName, localeName, key) {
+  const {project, locale} = await findProjectAndLocale(projectName, localeName);
+  assert(project, 'Project cannot be found.');
+  let conditions = { project: project._id };
+  if (locale) {
+    conditions.locale = locale._id;
+  }
+  if (key) {
+    conditions.key = new RegExp('^' + key);
+  }
+  const locales = locale ? [locale] : await models.Locale.find({ project: project._id }).exec();
+  const translations = await models.Translation.find(conditions)
+    .populate('locale')
+    .exec();
+  const obj = {};
+  _.map(locales, (loc) => {
+    obj[loc.locale] = {};
+  });
+  _.map(translations, (translation) => {
+    obj[translation.locale.locale][translation.key] = translation.translated;
+  });
+  return localeName ? obj[localeName] : obj;
 }
 
-function save(project, locale, key, translated) {
-  return findProjectAndLocale(project, locale)
-    .spread((project, locale) => {
-      assert(project, 'Project cannot be found.');
-      assert(locale, 'Locale cannot be found.');
-      return models.Translation.findOneAndUpdate(
-        { project: project._id, locale: locale._id, key: key },
-        { $set: { project: project._id, locale: locale._id, key: key, translated: translated } },
-        { upsert: true, new: true }
-      ).exec();
-    });
+async function save(projectName, localeName, key, translated) {
+  const {project, locale} = await findProjectAndLocale(projectName, localeName);
+  assert(project, 'Project cannot be found.');
+  assert(locale, 'Locale cannot be found.');
+  return models.Translation.findOneAndUpdate(
+    { project: project._id, locale: locale._id, key: key },
+    { $set: { project: project._id, locale: locale._id, key: key, translated: translated } },
+    { upsert: true, new: true }
+  ).exec();
 }
 
 function initialize(project, locales) {
@@ -73,16 +72,14 @@ function initialize(project, locales) {
     });
 }
 
-function remove(project, locale, key) {
+async function remove(projectName, localeName, key) {
   if (key) {
-    return findProjectAndLocale(project, locale)
-      .spread((proj, loc) => {
-        assert(proj, 'Project cannot be found.');
-        assert(loc, 'Locale cannot be found.');
-        return models.Translation.findOneAndRemove({ project: proj._id, locale: loc._id, key })
-      })
-  } else if (locale) {
-    return models.Locale.findOne({ name: project })
+    const {project, locale} = await findProjectAndLocale(projectName, localeName);
+    assert(project, 'Project cannot be found.');
+    assert(locale, 'Locale cannot be found.');
+    return models.Translation.findOneAndRemove({ project: project._id, locale: locale._id, key })
+  } else if (localeName) {
+    return models.Locale.findOne({ name: projectName })
       .populate('project')
       .exec()
       .then((loc) => {
@@ -90,8 +87,8 @@ function remove(project, locale, key) {
         models.Translation.find({ locale: loc._id }).remove().exec();
         return loc.remove();
       });
-  } else if (project) {
-    return models.Project.find({ name: project })
+  } else if (projectName) {
+    return models.Project.find({ name: projectName })
       .then((proj) => {
         return models.Translation.find({ project: proj._id }).remove().exec()
           .then(() => {
@@ -102,24 +99,15 @@ function remove(project, locale, key) {
   return Promise.resolve();
 }
 
-function listProjects() {
-  const list = [];
-  return models.Project.find()
-    .then((projects) => {
-      const promises = _.map(projects, (project) => {
-        return models.Locale.find({ project: project._id })
-          .then((locales) => {
-            const proj = {
-              name: project.name,
-              locales: _.map(locales, (locale) => {
-                return locale.locale;
-              })
-            };
-            list.push(proj);
-          });
-      });
-      return Promise.all(promises);
-    }).then(() => list);
+async function listProjects() {
+  const projects = await models.Project.find();
+  return Promise.map(projects, async (project) => {
+    const locales = await models.Locale.find({ project: project._id });
+    return {
+      name: project.name,
+      locales: _.map(locales, (locale) => locale.locale)
+    };
+  });
 }
 
 module.exports = {
