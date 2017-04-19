@@ -48,21 +48,29 @@ function save(project, locale, key, translated) {
       assert(locale, 'Locale cannot be found.');
       return models.Translation.findOneAndUpdate(
         { project: project._id, locale: locale._id, key: key },
-        { project: project._id, locale: locale._id, key: key, translated: translated },
+        { $set: { project: project._id, locale: locale._id, key: key, translated: translated } },
         { upsert: true, new: true }
       ).exec();
     });
 }
 
 function initialize(project, locales) {
-  const promises = [];
-  const proj = new models.Project({ name: project });
-  promises.push(proj.save());
-  for (const j in locales) {
-    const locale = new models.Locale({ locale: locales[j], project: proj._id }).save();
-    promises.push(locale);
-  }
-  return Promise.all(promises);
+  let options = { new: true, upsert: true };
+  return models.Project.findOneAndUpdate({ name: project }, { $set: { name: project } }, options).exec()
+    .then((proj) => {
+      return Promise.map(locales, (locale) =>
+        models.Locale.findOneAndUpdate(
+          { locale: locale, project: proj._id },
+          { $set: { locale: locale, project: proj._id } },
+          options
+        ).exec())
+        .then(() => models.Locale.find({ project: proj._id }))
+        .then((locs) => {
+          const p = proj.toObject();
+          p.locales = _.map(locs, (loc) => loc.locale);
+          return p;
+        })
+    });
 }
 
 function remove(project, locale, key) {
@@ -103,10 +111,10 @@ function listProjects() {
           .then((locales) => {
             const proj = {
               name: project.name,
+              locales: _.map(locales, (locale) => {
+                return locale.locale;
+              })
             };
-            proj.locales = _.map(locales, (locale) => {
-              return locale.locale;
-            });
             list.push(proj);
           });
       });

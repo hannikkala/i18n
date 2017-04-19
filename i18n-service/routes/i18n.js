@@ -34,6 +34,49 @@ const findTranslations = (project, locale) => {
   return persistence.find(project, locale);
 };
 
+const saveProject = (req, res) => {
+  persistence.initialize(req.params.project || req.body.name, req.body.locales)
+    .then((project) => {
+      res.status(201).json(project);
+    }).catch((err) => {
+      res.status(500).send(err);
+    });
+};
+
+/**
+ * @swagger
+ * /projects:
+ *  post:
+ *    tags:
+ *      - api
+ *    description: Creates a new project.
+ *    produces:
+ *      - application/json
+ *    responses:
+ *      200:
+ *        description: When successful.
+ *      500:
+ *        description: When any error occurred.
+ */
+router.post('/projects', saveProject);
+
+/**
+ * @swagger
+ * /projects:
+ *  put:
+ *    tags:
+ *      - api
+ *    description: Updates existing project.
+ *    produces:
+ *      - application/json
+ *    responses:
+ *      200:
+ *        description: When successful.
+ *      500:
+ *        description: When any error occurred.
+ */
+router.put('/projects/:project', saveProject);
+
 /**
  * @swagger
  * /{project}/{locale}:

@@ -6,7 +6,7 @@ const proxy = httpProxy.createProxyServer();
 const app = express();
 
 const port = process.env.UI_PORT ? process.env.UI_PORT : 9000;
-const publicPath = path.resolve(__dirname, 'dist');
+const publicPath = path.resolve(__dirname, 'i18n-ui/dist');
 
 app.use(express.static(publicPath));
 

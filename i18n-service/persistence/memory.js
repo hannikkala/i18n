@@ -18,11 +18,16 @@ function save(project, locale, key, translated) {
 }
 
 function initialize(project, locales) {
-  PROJECTS[project] = {};
+  if(!PROJECTS[project]) {
+    PROJECTS[project] = {};
+  }
   _.map(locales, (locale) => {
     PROJECTS[project][locale] = {};
   });
-  return Promise.resolve(PROJECTS);
+  const retObj = {};
+  retObj.name = project;
+  retObj.locales = locales;
+  return Promise.resolve(retObj);
 }
 
 function remove(project, locale, key) {

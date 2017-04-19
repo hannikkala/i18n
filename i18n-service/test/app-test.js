@@ -59,6 +59,25 @@ describe('App', () => {
       .set('Content-Type', 'application/json')
       .set('Authorization', `bearer ${adminToken}`)
       .expect(204);
-  })
+  });
 
+  it('can create project', () => {
+    return server.post('/api/projects')
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `bearer ${adminToken}`)
+      .send({ project: 'testproject', locales: ['en', 'ja-JP']})
+      .expect(201);
+  });
+
+  it('can update project', () => {
+    return server.put('/api/projects/second')
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `bearer ${adminToken}`)
+      .send({ locales: ['ja-JP']})
+      .expect(201)
+      .then((res) => {
+        res.body.locales.should.have.length(2);
+        res.body.locales.should.contain('ja-JP');
+      });
+  });
 });

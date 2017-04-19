@@ -1,0 +1,40 @@
+<template>
+    <div tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" click.trigger="controller.cancel()" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Create new project</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="name">Project name</label>
+                            <div class="input-group ${errors.name ? 'has-error' : ''}">
+                                <input type="text" class="form-control" value.bind="newProject.name" keyup.delegate="validateName()" id="name" placeholder="Type name for new project" size="50" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Locales</label>
+                            <div class="input-group ${errors.newLocale ? 'has-error' : ''}">
+                                <input type="text" class="form-control" value.bind="newLocale" keyup.delegate="validateNewLocale()" placeholder="Type a new locale...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default btn-success" type="button" click.delegate="add()" disabled.bind="errors.newLocale">+</button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6" repeat.for="locale of newProject.locales">
+                            ${locale}
+                            <button class="btn btn-xs btn-danger" click.delegate="remove(locale)">-</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" click.trigger="controller.cancel()">Cancel</button>
+                    <button type="button" class="btn btn-danger" disabled.bind="errors.name || newProject.locales.length < 1" click.trigger="controller.ok()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

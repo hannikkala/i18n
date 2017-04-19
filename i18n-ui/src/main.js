@@ -19,7 +19,8 @@ export async function configure(aurelia) {
         responseTokenProp: 'token',
         loginRedirect: '/#/protected/'
       });
-    });
+    })
+    .plugin('aurelia-dialog');
 
   // Uncomment the line below to enable animation.
   // aurelia.use.plugin('aurelia-animator-css');

@@ -18,8 +18,9 @@
   ],
   "version": "0.1.0",
   "scripts": {
+    "mongowait": "while ! nc -z localhost 27017; do sleep 0.1; done",
     "start": "./bin/i18n-service",
-    "test": "make test"
+    "test": "npm run mongowait && make test"
   },
   "main": "./i18n-service.js",
   "bin": {

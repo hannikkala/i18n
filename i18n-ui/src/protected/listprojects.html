@@ -1,5 +1,8 @@
 <template>
-    <table class="table table-striped table-hover">
+    <require from="../msg.html"></require>
+    <msg messages.bind="msg.messages"></msg>
+
+    <table class="table table-striped table-hover" if.bind="projects.length > 0">
         <thead>
         <tr>
             <th>Actions</th>
@@ -30,4 +33,7 @@
         </tr>
         </tbody>
     </table>
+    <a click.delegate="openAddDialog()" class="btn btn-success">
+        Add new project
+    </a>
 </template>

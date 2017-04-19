@@ -1,0 +1,14 @@
+version: '2'
+services:
+  i18n:
+    image: hannikkala/i18n:latest
+    ports:
+      - 9000:9000
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/i18n
+      - PERSISTENCE=mongo
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo
